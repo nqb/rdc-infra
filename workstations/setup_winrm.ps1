@@ -4,32 +4,35 @@ Set-ExecutionPolicy Unrestricted -Scope LocalMachine -Force -ErrorAction Ignore
 # Don't set this before Set-ExecutionPolicy as it throws an error
 $ErrorActionPreference = "stop"
 
+# start WinRM service (necessary to use Remove-Item)
+Start-Service WinRM
+
 # Remove HTTP listener
 Remove-Item -Path WSMan:\Localhost\listener\listener* -Recurse
 
+$hostname = hostname
+
 # Create a self-signed certificate to let ssl work
-$Cert = New-SelfSignedCertificate -CertstoreLocation Cert:\LocalMachine\My -DnsName "packer"
+$Cert = New-SelfSignedCertificate -CertstoreLocation Cert:\LocalMachine\My -DnsName "$hostname"
 New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address * -CertificateThumbPrint $Cert.Thumbprint -Force
 
 # WinRM
 write-output "Setting up WinRM"
-write-host "(host) setting up WinRM"
 
 # Configure WinRM to allow unencrypted communication, and provide the
 # self-signed cert to the WinRM listener.
-cmd.exe /c winrm quickconfig -q
 cmd.exe /c winrm set "winrm/config/service" '@{AllowUnencrypted="true"}'
 cmd.exe /c winrm set "winrm/config/client" '@{AllowUnencrypted="true"}'
 cmd.exe /c winrm set "winrm/config/service/auth" '@{Basic="true"}'
 cmd.exe /c winrm set "winrm/config/client/auth" '@{Basic="true"}'
 cmd.exe /c winrm set "winrm/config/service/auth" '@{CredSSP="true"}'
-cmd.exe /c winrm set "winrm/config/listener?Address=*+Transport=HTTPS" "@{Port=`"5986`";Hostname=`"autounattend`";CertificateThumbprint=`"$($Cert.Thumbprint)`"}"
+cmd.exe /c winrm set "winrm/config/listener?Address=*+Transport=HTTPS" "@{Port=`"5986`";Hostname=`"$hostname`";CertificateThumbprint=`"$($Cert.Thumbprint)`"}"
 
-# Make sure appropriate firewall port openings exist
-cmd.exe /c netsh advfirewall firewall set rule group="remote administration" new enable=yes
-cmd.exe /c netsh firewall add portopening TCP 5986 "Port 5986"
+# apply all changes and do a lot of config
+# https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/enable-psremoting
+# SkipNetworkProfileCheck due to current network used
+Enable-PSRemoting –SkipNetworkProfileCheck -Force
 
-# Restart WinRM, and set it so that it auto-launches on startup.
-cmd.exe /c net stop winrm
-cmd.exe /c sc config winrm start= auto
-cmd.exe /c net start winrm
+# Add firewall rule to allow WinRM on HTTP
+New-NetFirewallRule -Displayname 'WinRM - Powershell remoting HTTPS-In' -Name 'WinRM - Powershell remoting HTTPS-In' -Profile Any -LocalPort 5986 -Protocol TCP
+
