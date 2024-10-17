@@ -15,7 +15,7 @@ Write-Output "Install Thunderbird $thunderbird_ver"
 choco install thunderbird -y --version $thunderbird_ver
 
 Write-Output "Install Element $element_desktop_ver"
-choco install element -y --version $element_desktop_ver
+choco install element-desktop -y --version $element_desktop_ver
 
 Write-Output "Install latest version of common softwares"
 choco install vlc 7zip okular pdfsam libreoffice-still -y
