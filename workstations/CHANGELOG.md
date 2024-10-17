@@ -8,7 +8,7 @@ Track changes made to autounattend.xml
 
 - Join RDC workgroup
 - Add a registry key mapped to track autounattend version
-- Enable WinRM
+- Enable WinRM for PSRemoting
 - Install Chocolatey
 
 ### Changed
