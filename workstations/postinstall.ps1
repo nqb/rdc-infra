@@ -24,4 +24,4 @@ Write-Output "Install GLPI agent $glpi_agent_ver and send FIRST inventory"
 choco install glpi-agent -y --version $glpi_agent_ver --install-arguments="SERVER=https://glpi.rennesducompost.fr/ TAG=InstalledByChocolatey RUNNOW=1"
 
 Write-Output "Download Bluemind plugin"
-Invoke-WebRequest https://mail.rennesducompost.fr/settings/settings/download/tbird-webext.xpi -Outfile C:\Windows\Setup\scripts\bluemind-connector.xpi
+Invoke-WebRequest -UseBasicParsing https://mail.rennesducompost.fr/settings/settings/download/tbird-webext.xpi -Outfile C:\Windows\Setup\scripts\bluemind-connector.xpi
