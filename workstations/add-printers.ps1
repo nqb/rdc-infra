@@ -1,4 +1,4 @@
-$driverPath = "C:\Windows\Setup\Scripts\hpygid24_v4.inf"
+$driverPath = "C:\Users\Public\Documents\hpygid24_v4.inf"
 $driverName = "HP Envy Photo 6200 series PCL-3"
 $printerName = "IMP001"
 $printerPort = "172.16.71.191"
