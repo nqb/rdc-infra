@@ -1,8 +1,8 @@
 $driverPath = "C:\Users\Public\Documents\hpygid24_v4.inf"
 $driverName = "HP Envy Photo 6200 series PCL-3"
 $printerName = "IMP001"
-$printerPort = "172.16.71.191"
-$printerPortName = "TCPPort:172.16.71.191"
+$printerPort = "172.16.71.218"
+$printerPortName = "TCPPort:172.16.71.218"
 
 if ($null -eq (Get-Printer -name $printerName)) {
     # Check if driver is not already installed
