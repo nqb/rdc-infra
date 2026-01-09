@@ -1,5 +1,6 @@
 # Generate new cert for 10 years
 $hostname = hostname
+$Cert = New-SelfSignedCertificate -CertstoreLocation Cert:\LocalMachine\My -DnsName "$hostname"
 New-SelfSignedCertificate -CertstoreLocation Cert:\LocalMachine\My -DnsName "$hostname" -NotAfter (Get-Date).AddYears(10)
 
 # Display current WMan instance
